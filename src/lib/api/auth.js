@@ -8,3 +8,6 @@ export const register = ({ username, password }) => client.post('/api/auth/regis
 
 // Check Login Status
 export const check = () => client.get('/api/auth/check');
+
+// LogOut
+export const logout = () => client.post('/api/auth/logout');

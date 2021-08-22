@@ -45,12 +45,19 @@ const ButtonWithMarginTop = styled(Button)`
     margin-top: 1rem;
 `;
 
+const ErrorMessage = styled.div`
+    color: #eb3b5a;
+    text-align: center;
+    font-size: 0.875rem;
+    margin-top: 1rem;
+`;
+
 const textMap = {
     login: 'LogIn',
     register: 'Register',
 }
 
-const AuthForm = ({ type, form, onChange, onSubmit }) => {
+const AuthForm = ({ type, form, onChange, onSubmit, error }) => {
     const text = textMap[type];
     return (
         <AuthFormBlock>
@@ -61,6 +68,7 @@ const AuthForm = ({ type, form, onChange, onSubmit }) => {
                 {type === 'register' && (
                     <StyledInput autoComplete="new-password" name="passwordConfirm" placeholder="confirm password" type="password" onChange={onChange} value={form.passwordConfirm} />
                 )}
+                {error && <ErrorMessage>{error}</ErrorMessage>}
                 <ButtonWithMarginTop cyan fullWidth>{text}</ButtonWithMarginTop>
             </form>
             <Footer>

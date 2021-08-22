@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AuthForm from "../../components/auth/AuthForm";
 import { changeField, initializeForm, login } from "../../modules/auth";
@@ -6,6 +6,7 @@ import { withRouter } from "react-router-dom";
 import { check } from "../../modules/user";
 
 const LoginForm = ({ history }) => {
+    const [error, setError] = useState(null);
     const dispatch = useDispatch();
     const { form, auth, authError, user } = useSelector( ({ auth, user }) => ({
         form: auth.login,
@@ -42,6 +43,7 @@ const LoginForm = ({ history }) => {
         if (authError) {
             console.log('Error!');
             console.log('authError');
+            setError('Login Failure');
             return;
         }
         if (auth) {
@@ -52,12 +54,17 @@ const LoginForm = ({ history }) => {
 
     useEffect(() => {
         if (user) {
-            history.push('/')
+            history.push('/');
+            try {
+                localStorage.setItem('user', JSON.stringify(user));
+            } catch (e) {
+                console.log('localStorage is not working');
+            }
         }
     }, [history, user]);
 
     return (
-        <AuthForm type="login" form={form} onChange={onChange} onSubmit={onSubmit} />
+        <AuthForm type="login" form={form} onChange={onChange} onSubmit={onSubmit} error={error} />
     );
 };
 
