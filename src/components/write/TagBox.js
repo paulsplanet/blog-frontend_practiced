@@ -58,9 +58,9 @@ const TagListBlock = styled.div`
     margin-top: 0.5rem;
 `;
 
-const TagItem = React.memo( ({ tag, onRemove }) => <Tag onClick={() => onRemove(tag)}>#{tag}</Tag> );
+const TagItem = React.memo(({ tag, onRemove }) => <Tag onClick={onRemove}>#{tag}</Tag>);
 
-const TagList = React.memo( ({ tags, onRemove }) => (
+const TagList = React.memo(({ tags, onRemove }) => (
     <TagListBlock>
         {tags.map(tag => (
             <TagItem key={tag} tag={tag} onRemove={onRemove} />
@@ -70,42 +70,44 @@ const TagList = React.memo( ({ tags, onRemove }) => (
 
 const TagBox = () => {
     const [input, setInput] = useState('');
-    const [localTags, setLocalTags] = useState('');
-
+    const [localTags, setLocalTags] = useState([]);
     const insertTag = useCallback(
         tag => {
             if (!tag) return;
             if (localTags.includes(tag)) return;
-            setLocalTags([...localTags,tag]);
+            setLocalTags([...localTags, tag]);
         },
         [localTags],
     );
-
     const onRemove = useCallback(
         tag => {
             setLocalTags(localTags.filter(t => t !== tag));
         },
         [localTags],
     );
+    const onChange = useCallback(
+        e => {setInput(e.target.value);}, []
+    );
+    const onSubmit = useCallback(
+        e => {
+            e.preventDefault();
+            insertTag(input.trim());
+            setInput('');
+        },
+        [input, insertTag],
+    );
 
-    const onChange = useCallback(e => {setInput(e.target.value)}, []);
-
-    const onSubmit = useCallback(e => {
-        e.preventDefault();
-        insertTag(input.trim());
-        setInput('');
-    }, [input, insertTag]);
-
-    return (
+    return(
         <TagBoxBlock>
             <h4>Tag</h4>
             <TagForm onSubmit={onSubmit}>
-                <input placeholder="Write a tag" value={input} onChange={onChange} />
-                <button type="submit">Add</button>
+                <input placeholder="write a tag here" value={input} onChange={onChange} />
+                <button type="submit">ADD</button>
             </TagForm>
             <TagList tags={localTags} onRemove={onRemove} />
         </TagBoxBlock>
     );
 };
+
 
 export default TagBox;
