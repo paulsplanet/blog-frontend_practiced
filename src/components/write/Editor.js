@@ -31,7 +31,7 @@ const QuillWrapper = styled.div`
     }
 `;
 
-const Editor = () => {
+const Editor = ({ title, body, onChangeField }) => {
     const quillElement = useRef(null); // set up DivElement to apply Quill
     const quillInstance = useRef(null); // set up Quill Instance
 
@@ -48,11 +48,22 @@ const Editor = () => {
                 ],
             },
         });
-    }, []);
+
+        const quill = quillInstance.current;
+        quill.on('text-change', (delta, oldDelta, source) => {
+            if (source === 'user') {
+                onChangeField({ key: 'body', value: quill.root.innerHTML });
+            }
+        });
+    }, [onChangeField]);
+
+    const onChangeTitle = e => {
+        onChangeField({ key: 'title', value: e.target.value });
+    };
 
     return (
         <EditorBlock>
-            <TitleInput placeholder="Write a title here" />
+            <TitleInput placeholder="Write a title here" onChange={onChangeTitle} value={title}/>
             <QuillWrapper>
                 <div ref={quillElement} />
             </QuillWrapper>
